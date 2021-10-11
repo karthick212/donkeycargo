@@ -1,0 +1,234 @@
+@media screen and (max-width: 600px) {
+  .hidemobile {
+    display: none;
+  }
+  .rowflexdisable {
+    flex-wrap: unset !important;
+  }
+  .card-header {
+    padding: .75rem 0.25rem;
+  }
+}
+
+a.orange-back-link:hover {
+  border: 1px solid #f4511e;
+  color: #fff !important;
+  background: #f4511e !important;
+  box-shadow: 0 5px 10px 0 rgba(0; 0; 0; 0.2); 0 20px 29px 0 rgba(0; 0; 0; 0.19);
+}
+
+a.orange-back-link1:hover {
+  border: 1px solid #f4511e;
+  color: #f4511e !important;
+  background: transparent !important;
+  box-shadow: 0 5px 10px 0 rgba(0; 0; 0; 0.2); 0 20px 29px 0 rgba(0; 0; 0; 0.19);
+}
+
+.left-side-box a.orange-border-link; .left-side-box a.orange-back-link {
+  position: absolute;
+  left: 30px;
+  right: 0;
+  bottom: 30px;
+  max-width: 179px;
+  margin: 0;
+}
+
+.textGradient
+{
+  font-family:fantacy;
+  font-weight:500;
+  font-size:28px;
+  background: -webkit-linear-gradient( #9400A3;#F7853B);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.group-padding7
+{
+  padding: 7px;
+}
+
+.button3d {
+  border: 0;
+  /*background: #0087cc;*/
+  border-radius: 4px;
+  /*box-shadow: 0 5px 0 #006599;*/
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  margin: 0;
+  outline: 0;
+  /*padding: 12px 20px;*/
+  transition: all .1s linear;
+}
+.button3d:active {
+  box-shadow: 0 2px 0 #006599;
+  transform: translateY(3px);
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  right: 105%;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+div[disabled]
+{
+  pointer-events: none;
+  opacity: 0.7;
+}
+/*a.orange-back-link {
+    text-align: center;
+    display: inline-block;
+    padding: 13px 20px;
+    border-radius: 25px;
+    color: #f4511e !important;
+    font-size: 16px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid #f4511e;
+    font-weight: 700;
+    background: transparent;
+    }*/
+
+    .buttonstylefocus {
+      cursor:pointer;
+      text-align: center;
+      display: inline-table;
+      padding: 13px 20px;
+      border-radius: 10px;
+      font-size: 16px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 700;
+      border: 1px solid #f4511e;
+      color: #fff;
+      background: #f4511e;
+      box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 20px 29px 0 rgba(0, 0, 0, 0.19);
+      overflow-wrap: break-word
+    }
+
+    .buttonstyle {
+      cursor: pointer;
+      text-align: center;
+      display: inline-table;
+      padding: 13px 20px;
+      border-radius: 10px;
+      color: rgb(244; 81; 30);
+      font-size: 16px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border: 1px solid rgb(244; 81; 30);
+      font-weight: 700;
+      text-decoration: none;
+      background: transparent;
+      overflow-wrap: break-word;    
+    }
+
+    .notification {
+      /*background-color: #555;*/
+      /*color: white;*/
+      text-decoration: none;
+      padding: 15px 26px;
+      position: relative;
+      display: inline-block;
+      border-radius: 2px;
+    }
+
+    .notification .badge {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      padding: 5px 10px;
+      border-radius: 0%;
+      background-color: red;
+      color: white;
+    }
+
+    /*Button Parallelogram*/
+
+    .buttonP {
+      background: #f4511e;
+      color: #fff;
+      /* box-shadow: 10px 10px 0 rgba(0,0,0,.5); */
+      display: inline-block;
+      /* font-size: 2em; */
+      padding: .5em 1em;
+      text-decoration: none;
+      margin-left: 1em;
+    }
+  }
+
+  .buttonP:hover {
+    box-shadow: 0 0 0 ;
+  }
+
+  .parallelogram{
+    transform: skew(-20deg);
+  }
+
+  .skew-fix{
+    display:inline-block;
+    transform: skew(20deg);
+  }
+
+
+  .error {
+    font-size: 14px;
+    font-weight: 400;
+    color: red;
+    float: right;
+  }
+
+  .success {
+    font-size: 14px;
+    font-weight: 400;
+    color: green;
+    float: right;
+  }
+
+  /*Material UI*/
+  .MuiFormLabel-root {
+    color: black !important;
+    padding: 0;
+    font-size: 0.9rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 100 !important;
+    line-height: 1;
+    letter-spacing: 0.00938em;
+  }
+
+@media (max-width: 575.98px) {
+  .MuiInputBase-input {
+    font: inherit;
+    color: black !important;}
+ .MuiFormLabel-root {
+    color: black !important;
+    padding: 0;
+    font-size: 0.9rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 300 !important;
+    line-height: 1;
+    letter-spacing: 0.00938em;
+  }
+  }
