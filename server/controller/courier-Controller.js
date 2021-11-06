@@ -328,11 +328,10 @@ cancelBooking(user,callback) {
               dbconfig.query("update tbl_driverstatus set isMadmoney='OFF' where Mobileno=?",[data[0].drivermobile])
             }
 
-            console.log(results2)
-            if(results2&&results2[0].NetTotal)
+            if(results2.length)
               results.rs=results2[0].NetTotal
             else results.rs="0"
-              if(results1&&results1[0].Drivermobile) {
+              if(results1.length) {
                 results.drivermob=results1[0].Drivermobile
                 return callback(null, results)
               }

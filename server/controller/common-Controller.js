@@ -19,8 +19,8 @@ QueryExecute(qry,args)
   })
 },
 SendSMS(mobno,msg,cb){
-     //var Otpurl = 'http://manage.rkadsindia.in/SendSMS/sendmsg.php?uname=DCARGO&pass=123456&send=DCARGO&dest=' + mobno + '&msg=' + msg
-     var Otpurl = 'https://sms.nettyfish.com/vendorsms/pushsms.aspx?apikey=84c52596-d40a-4ecd-aab9-5b275c01f828&clientId=10c06444-221b-463e-a9c1-bcbe4d418b88&msisdn='+mobno+'&sid=DCARGO&msg='+msg+'&fl=0&gwid=2'
+  var Otpurl = 'https://sms.nettyfish.com/api/v2/SendSMS?SenderId=DCARGO&Is_Unicode=false&Is_Flash=false&Message='+msg+'&MobileNumbers='+mobno+'&ApiKey=84c52596-d40a-4ecd-aab9-5b275c01f828&ClientId=10c06444-221b-463e-a9c1-bcbe4d418b88'
+
      return new Promise((res,rej)=>{
       var dd = Request.get(encodeURI(Otpurl),(err,results)=>{        
        if(results.statusCode=='200'){

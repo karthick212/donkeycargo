@@ -111,15 +111,16 @@ var driverController = {
       let querys = 'INSERT INTO `tbl_driver_general_detail` (`driver_id`, `drivertype`,`driver_name`, `driver_email`, `driver_phone`, `driver_lan`,    `driver_address`,        `year_experience`,      `vehicle_width`,          `vehicle_height`,           `vehicle_depth`,           `vehicle_model`,         `vehicle_number`, `vehicle_type`, `driverstatus`, `isactive`, `Remarks`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
       let datas = [profileData.driverid, profileData.drivertype, profileData.drivername, profileData.driveremail, profileData.drivermobileno, profileData.driverlan, profileData.driveraddress, profileData.experience, profileData.vehiclewidth, profileData.vehicleheight, profileData.vehicledepth, profileData.vehiclemodel, profileData.vehiclenumber, profileData.vehicletype, 'Pending', 1, '']
       return dbconfig.query(querys, datas , (err,results1)=>{
+        console.log(err)
         let insertQuery = 'INSERT INTO `tbl_otplist` (mobile, otp, date, time, role, imeino)VALUES (?,?,?,?,?,?)'
     return dbconfig.query(insertQuery, [profileData.drivermobileno, RandomOtp, todate1, time, 'driver', profileData.imeino], (err, results1) => {
     
-      let ss= common.MessageTemplate("DRSNOTP").then(res2=>{
-        let temp=res2.replace('$otp$',RandomOtp);
-        return common.SendSMS(profileData.drivermobileno,temp).then(res3=>{
-          return 1;
-        })  
-      })  
+      // let ss= common.MessageTemplate("DRSNOTP").then(res2=>{
+      //   let temp=res2.replace('$otp$',RandomOtp);
+      //   return common.SendSMS(profileData.drivermobileno,temp).then(res3=>{
+      //     return 1;
+      //   })  
+      // })  
       
       if (results.affectedRows > 0) {
         results.otp=RandomOtp
@@ -135,6 +136,7 @@ var driverController = {
   },  
   updateDriver(user,callback)
   {
+    let profileData=user
       let updateQry = "UPDATE tbl_driver_general_detail SET `driver_name`=?,`driver_email`=?,`driver_phone`=?, `driver_address`=?,`year_experience`=?,`vehicle_number`=?, `vehicle_type`=?, `driverstatus`=?, `Remarks`=? where id =?";
       let param=[profileData.drivername, profileData.driveremail, profileData.drivermobileno, profileData.driveraddress, profileData.experience, profileData.vehiclenumber, profileData.vehicletype, profileData.driverstatus, profileData.remarks, profileData.id ]
       dbconfig.query(updateQry,param,(err,res)=>{

@@ -1,5 +1,6 @@
 var dbconfig = require('../config/db')
 const Request = require('request')
+const common = require('../controller/common-Controller')
 
 var UserController = {
  // User Registration

@@ -22,7 +22,8 @@
     "nodemailer": "^6.7.0",
     "path": "^0.12.7",
     "progress-stream": "^2.0.0",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "supervisor": "^0.12.0"
   },
   "engines": {
     "node": "4.0.0"

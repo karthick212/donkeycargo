@@ -20,7 +20,7 @@ router.post("/otp", function(request, response) {
 });
 
 // Courier Calculation
-router.post("/Calc", function(request, response) {
+router.get("/Calc", function(request, response) {
   let ResMsg={};
   //if (otpdata != null) 
  // var flat=request.param('flat');
@@ -40,7 +40,7 @@ router.post("/Calc", function(request, response) {
  // var BB2=request.param('BB2');
  // var BH2=request.param('BH2'); 
  
- let reqq=request.body;
+ let reqq=request.query;
  //let reqq=request.query;
 
 //courierActivity.AmountCalc(flat,flong,fs,ts,ctype,cname,DL1,DB1,DL2,DB2,BL1,BB1,BH1,BL2,BB2,BH2,request.param('tlat'),request.param('tlong'), (err, res) =>{
@@ -60,7 +60,7 @@ router.post("/Calc", function(request, response) {
         let boxamt=res.BAmt1+res.BAmt2;
         if(res.BAmt1==0&&res.BAmt2==0)  box='Box'; else if(res.BAmt1!=0&&res.BAmt2!=0) box='Box(2)';
 
-        let gross=res.DAmt1+res.DAmt2+res.BAmt1+res.BAmt2;
+        let gross=res.DAmt1+res.DAmt2+res.BAmt1+res.BAmt2+res.SAmt;
         let Total1=res.DAmt1+res.DAmt2+res.BAmt1+res.BAmt2+res.SAmt;
 
         let disc=0;
