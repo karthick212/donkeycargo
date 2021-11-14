@@ -89,9 +89,7 @@ UpdateUser(user,callback) {
 getUserValue(user,callback) {
   let insertQuery = 'select * from tbl_userdetails where Mobile=?'
   return dbconfig.query(insertQuery,user, (err, results) => {
-    console.log(results)
-    if (results.affectedRows > 0) {
-     console.log(results)
+     if (results.affectedRows > 0) {
      return callback(null, results)
    }
    else {
