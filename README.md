@@ -1,2 +1,0 @@
-# donkeycargo
-contains build files
