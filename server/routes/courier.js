@@ -320,11 +320,11 @@ router.get("/test", (request, response) => {
 
 router.get("/checkstatus", async (request, response) => {
   const data = request.query
-  let getQuery = "select * from vw_assignbooking where BookingId=?"
-  let bookinghistory = await common.QueryExecute(getQuery, [data.bookingid])
+  let getQuery = "select * from vw_assignbooking where drivertoken=?"
+  let bookinghistory = await common.QueryExecute(getQuery, [data.token])
   const token = encryptToken(signIn({ body: first(bookinghistory) }).token)
 
-  let result = await common.QueryExecute("select *  from tbl_assignbooking where BookingId=?", [data.bookingid]);
+  let result = await common.QueryExecute("select *  from tbl_assignbooking where drivertoken=?", [data.token]);
   if(result.length)
   sendResult({ token, ...first(result) }, response)
   else sendResult(null, response)
@@ -332,8 +332,8 @@ router.get("/checkstatus", async (request, response) => {
 
 router.get("/checkuser", async (request, response) => {
   const data = request.query
-  let getQuery = "select * from vw_assignbooking where BookingId=?"
-  let bookinghistory = await common.QueryExecute(getQuery, [data.bookingid])
+  let getQuery = "select * from vw_assignbooking where token=?"
+  let bookinghistory = await common.QueryExecute(getQuery, [data.token])
   const token = encryptToken(signIn({ body: first(bookinghistory) }).token)
 
   if(bookinghistory.length)
