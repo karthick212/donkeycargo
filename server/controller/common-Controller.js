@@ -60,7 +60,21 @@ var CommonController = {
     var Otpurl = 'https://sms.nettyfish.com/api/v2/SendSMS?SenderId=DCARGO&Is_Unicode=false&Is_Flash=false&Message=' + msg + '&MobileNumbers=' + mobno + '&ApiKey=84c52596-d40a-4ecd-aab9-5b275c01f828&ClientId=10c06444-221b-463e-a9c1-bcbe4d418b88'
 
     return new Promise((res, rej) => {
-      var dd = Request.get(encodeURI(Otpurl), (err, results) => {
+      const data={
+        "SenderId": "DCARGO",
+        "Is_Unicode": false,
+        "Is_Flash": false,
+        "Message": msg,
+        "MobileNumbers": mobno,
+        "ApiKey": "84c52596-d40a-4ecd-aab9-5b275c01f828",
+        "ClientId": "10c06444-221b-463e-a9c1-bcbe4d418b88"
+      }
+     const formdata= {
+        url: 'https://sms.nettyfish.com/api/v2/SendSMS',
+        body: data,
+        json: true
+      }
+      var dd = Request.post(formdata, (err, results) => {
         if (results.statusCode == '200') {
           return res('success')
         }
@@ -68,6 +82,15 @@ var CommonController = {
           return rej(err)
         }
       })
+
+      // var dd = Request.post(encodeURI(Otpurl), (err, results) => {
+      //   if (results.statusCode == '200') {
+      //     return res('success')
+      //   }
+      //   else {
+      //     return rej(err)
+      //   }
+      // })
 
     })
   },

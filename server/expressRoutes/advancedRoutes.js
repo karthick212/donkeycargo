@@ -80,14 +80,14 @@ itemRoutes.route('/Complaints/add').post(function(req,res,err){
     if(ress.affectedRows>0)
     {
       return common.MessageTemplate("COMPLAINT").then(ress=>{
-        let temp=ress.replace('$bid$',user.bid);
+        let temp=ress.replace('$bid$',req.body.bookingid);
+        temp=temp.replace('$cno$',req.body.id);
         return common.SendSMS(req.body.callermobile,temp).then(ress=>{
           return res.json(req.body);
         })
       }).catch(err=>{return res.json(err);})
     }
   }).catch(err=>{return res.json(err);});
-
 });
 
 itemRoutes.route('/Complaints/update').post(function(req,res,err){

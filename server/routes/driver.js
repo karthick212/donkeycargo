@@ -434,6 +434,12 @@ router.post('/BookingAction', function (req, res, err) {
         else {
           let items2 = common.QueryExecute("select count(*) as cnt,max(drivermobile) as drivermobile,ifNull((SELECT COUNT(*) from vw_assignbooking WHERE isdrop=0 and drivermobile=base.Drivermobile),0) as dCount from vw_assignbooking base where id=? ", [reqq.id]).then(data => {
             return common.QueryExecute("delete from tbl_assignbooking where id=?", [reqq.id]).then(rej => {
+              const link= common.MessageTemplate("ADMINALERTDRIVERCANCEL").then(res2 => {
+                let temp = res2.replace('$bid$', result2[0].BookingId);
+                  return common.SendSMS(adminmobnos, temp).then(res3 => {
+                  // return 1;
+                })
+              })
 
               if (data[0].dCount <= 1) {
                 common.QueryExecute("update tbl_driverstatus set isMadmoney='OFF' where Mobileno=?", [data[0].drivermobile])

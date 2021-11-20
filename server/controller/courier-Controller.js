@@ -5,6 +5,7 @@ var distance = require('google-distance');
 distance.apiKey = 'AIzaSyDZYpk5JAy91rb9XO86-HIGjXJjfiEBxg8';
 var geodist = require('geodist')
 const { signIn, verifyToken, welcome } = require("./handler");
+const adminmobnos='9069064005,9444555194'
 
 //var Distance = require('geo-distance');
 
@@ -143,7 +144,6 @@ var UserController = {
           catch (e) { }
         })
       })
-      //console.log(dc)
     });
 
     //return cb(null,ResMsg)
@@ -161,8 +161,6 @@ var UserController = {
   //   const body = { body: { ...user, pickupOTP: RandomOtp, dropOTP: RandomOtp2 } }
   //   const token = signIn(body)
 
-  //   console.log(token)
-  //   console.log('user', user)
   //   let insertQuery = 'INSERT INTO `tbl_courierbooking` (`BookingId`, `BookingSerial`, `BookingDate`, `BookingTime`, `FromLatitude`,`FromLongitude`, `ToLatitude`, `ToLongitude`, `FromAddress`, `ToAddress`, `CourierType`, `CourierName`, `ProductType`, `LocalAdd1`, `LocalAdd2`, `LocalAdd3`,          `DL1`,      `DB1`,    `DAmt1`,   `DL2`,   `DB2`,  `DAmt2`,    `BL1`,   `BB1`,  `BH1`,   `BW1`,  `BAmt1`,   `BL2`,   `BB2`,  `BH2`,    `BW2`, `BAmt2`,     `Total`, `PaymentMode`, `CouponCode`, `CouponAmt`,     `NetTotal`,   `isCancel`, `isActive`, `MobileNo`, `OTP`, `BankRefNo`, `UserID`, `RecName`, `RecMobile`, `Remarks`, `LocalDistance`, `SAmt`, `RecOTP`, `NOI`, `clatitude`, `clongitude`, `PersonalMobno`, `token`) VALUES (?)';
   //   let params = [user.bid, user.bserial, todate, time, user.fromlat, user.fromlong, user.tolat, user.tolong, user.fromadd, user.toadd, user.ctype, user.cname, user.product, user.localadd1, user.localadd2, user.localadd3, user.dl1, user.db1, user.damt1, user.dl2, user.db2, user.damt2, user.bl1, user.bb1, user.bh1, user.bw1, user.bamt1, user.bl2, user.bb2, user.bh2, user.bw2, user.bamt2, user.total, user.paymode, user.couponcode, user.couponamt, user.nettotal, user.iscancel, '1', user.mobno, RandomOtp, user.bankrefno, user.userid, user.recname, user.recmobile, user.remarks, user.localdistance, user.samt, RandomOtp2, user.noi, user.clat, user.clong, user.personal, token]
   //   return common.QueryExecute(insertQuery, params).then(res1 => {
@@ -223,6 +221,25 @@ var UserController = {
     let insertQuery = 'INSERT INTO `tbl_courierbooking` (`BookingId`, `BookingSerial`, `BookingDate`, `BookingTime`, `FromLatitude`,`FromLongitude`, `ToLatitude`, `ToLongitude`, `FromAddress`, `ToAddress`, `CourierType`, `CourierName`, `ProductType`, `LocalAdd1`, `LocalAdd2`, `LocalAdd3`,          `DL1`,      `DB1`,    `DAmt1`,   `DL2`,   `DB2`,  `DAmt2`,    `BL1`,   `BB1`,  `BH1`,   `BW1`,  `BAmt1`,   `BL2`,   `BB2`,  `BH2`,    `BW2`, `BAmt2`,     `Total`, `PaymentMode`, `CouponCode`, `CouponAmt`,     `NetTotal`,   `isCancel`, `isActive`, `MobileNo`, `OTP`, `BankRefNo`, `UserID`, `RecName`, `RecMobile`, `Remarks`, `LocalDistance`, `SAmt`, `RecOTP`, `NOI`, `clatitude`, `clongitude`, `PersonalMobno`, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
     return dbconfig.query(insertQuery, [user.bid, user.bserial, todate, time, user.fromlat, user.fromlong, user.tolat, user.tolong, user.fromadd, user.toadd, user.ctype, user.cname, user.product, user.localadd1, user.localadd2, user.localadd3, user.dl1, user.db1, user.damt1, user.dl2, user.db2, user.damt2, user.bl1, user.bb1, user.bh1, user.bw1, user.bamt1, user.bl2, user.bb2, user.bh2, user.bw2, user.bamt2, user.total, user.paymode, user.couponcode, user.couponamt, user.nettotal, user.iscancel, '1', user.mobno, RandomOtp, user.bankrefno, user.userid, user.recname, user.recmobile, user.remarks, user.localdistance, user.samt, RandomOtp2, user.noi, user.clat, user.clong, user.personal, token], (err, results) => {
       if (results.affectedRows > 0) {
+        let link= common.MessageTemplate("DROPOTP").then(res2 => {
+          let url=new URL('https://donkeycargo.com/Booking/#/user/'+token)
+          let temp = res2.replace('$bid$', user.bid);
+          temp = temp.replace('$otp$', RandomOtp2);
+          temp = temp.replace('$link1$', url.href.substring(0,29));
+          temp = temp.replace('$link2$', url.href.substring(29,url.href.length+1));
+
+            return common.SendSMS(user.recmobile, temp).then(res3 => {
+            return 1;
+          })
+        })
+
+        link= common.MessageTemplate("ADMINALERT").then(res2 => {
+          let temp = res2.replace('$bid$', user.bid);
+            return common.SendSMS(adminmobnos, temp).then(res3 => {
+            return 1;
+          })
+        })
+
         common.NearestDriver(user, 'Courier', '', (res) => {
           if (res == "success") {
             let sms = common.MessageTemplate("CRBKOTP").then(res2 => {
@@ -232,7 +249,7 @@ var UserController = {
                 return 1;
               })
             })
-
+           
             if (user.personal != '') {
               let pers = common.MessageTemplate("CRBKOTP1").then(res2 => {
                 let temp = res2.replace('$bid$', user.bid);
@@ -255,7 +272,6 @@ var UserController = {
   BillNoGen (cb) {
     let qry = 'select ifnull(max(BookingSerial),0)+1 as cnt from tbl_courierbooking';
     dbconfig.query(qry, (err, results) => {
-      //console.log(results);
       return cb(results)
     })
   },
@@ -327,6 +343,13 @@ var UserController = {
               dbconfig.query("update tbl_driverstatus set isMadmoney='OFF' where Mobileno=?", [data[0].drivermobile])
             }
 
+            const link= common.MessageTemplate("ADMINALERTUSERCANCEL").then(res2 => {
+              let temp = res2.replace('$bid$', user.bid);
+                return common.SendSMS(adminmobnos, temp).then(res3 => {
+                // return 1;
+              })
+            })
+
             if (results2.length)
               results.rs = results2[0].NetTotal
             else results.rs = "0"
@@ -353,11 +376,11 @@ var UserController = {
     if (user != undefined) {
       let RandomOtp = Math.floor(1000 + Math.random() * 9000)
       let qry1 = 'Select count(*) as cnt from tbl_assignbooking where BookingId=?'
+      let token = Math.random().toString(36).substr(2, 6)
       common.QueryExecute(qry1, [user.bid]).then(res => {
         return res[0].cnt;
       }).then(res => {
         if (res === 0 && user.drivermobile !== '') {
-          let token = Math.random().toString(36).substr(2, 6)
 
           let qry = 'Insert into tbl_assignbooking(`BookingType`, `BookingId`, `Userid`, `Mobileno`, `DriverId`, `isAccept`, `isReject`, `Drivermobile`, `drivertoken`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
           return common.QueryExecute(qry, [user.booktype, user.bid, user.userid, user.mobno, user.driverid, '0', '0', user.drivermobile, token]).then(res1 => {
@@ -377,6 +400,17 @@ var UserController = {
               })
             })
           })
+          let link= common.MessageTemplate("BKDRIVERALERT").then(res2 => {
+            let url=new URL('https://donkeycargo.com/Booking/#/driver/'+token)
+            let temp = res2.replace('$bid$', user.bid);
+            temp = temp.replace('$link1$', url.href.substring(0,29));
+            temp = temp.replace('$link2$', url.href.substring(29,url.href.length+1));
+  
+              return common.SendSMS(user.drivermobile, temp).then(res3 => {
+              return 1;
+            })
+          })
+
           let sr = common.MessageTemplate("CRBKDR").then(res1 => {
             let temp = res1.replace('$bid$', user.bid);
             temp = temp.replace('$hno$', user.hno)
@@ -401,10 +435,10 @@ var UserController = {
                 })
               })
             }
-            else return 1;
+            return cb('success');
           })
         }
-        else return 1;
+        else return cb('success');
       })
         .catch(err => {
           console.log(err)
@@ -426,7 +460,6 @@ var UserController = {
                 let temp = results;
                 temp = temp.replace('$bid$', user.bid);
                 temp = temp.replace('$otp$', RandomOtp);
-                //console.log(temp);
 
                 //Send SMS
                 common.SendSMS(user.mobno, temp, (results) => {
@@ -440,7 +473,6 @@ var UserController = {
                   let temp = results;
                   temp = temp.replace('$bid$', user.bid);
                   temp = temp.replace('$otp$', RandomOtp);
-                  //console.log(temp);
 
                   //Send SMS
                   common.SendSMS(user.recmobile, temp, (results) => {

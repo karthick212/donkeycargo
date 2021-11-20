@@ -264,6 +264,7 @@ router.post('/DriverAssign', (request, response) => {
   var mobno = res.mobno;
   var id = res.id;
   courierActivity.DriverAssign(res, (rows) => {
+    console.log(rows)
     if (rows == 'success') {
       ResMsg.status = 'success'
       ResMsg.data = rows
