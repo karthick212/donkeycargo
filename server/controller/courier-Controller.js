@@ -4,6 +4,7 @@ const common = require('../controller/common-Controller')
 var distance = require('google-distance');
 distance.apiKey = 'AIzaSyDZYpk5JAy91rb9XO86-HIGjXJjfiEBxg8';
 var geodist = require('geodist')
+var moment = require('moment')
 const { signIn, verifyToken, welcome } = require("./handler");
 const adminmobnos = '9069064005,9444555194'
 // const adminmobnos = '9095204586'
@@ -212,7 +213,7 @@ var UserController = {
     var ISTOffset = 750;   // IST offset UTC +5:30
     var date = new Date(currentTime.getTime() + (ISTOffset + currentOffset) * 60000);
 
-    time = date.toISOString().slice(11, 19);
+    time = moment().utcOffset(330).format("HH:mm:ss"); //date.toISOString().slice(11, 19);
     let RandomOtp = Math.floor(1000 + Math.random() * 9000)
     let RandomOtp2 = Math.floor(1000 + Math.random() * 9000)
     let token = Math.random().toString(36).substr(2, 6)
