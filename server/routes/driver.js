@@ -11,6 +11,8 @@ const driverActivity = require('../controller/driver-Controller')
 const jwt = require('jsonwebtoken')
 var dbconfig = require('../config/db')
 const common = require('../controller/common-Controller')
+const adminmobnos = '9069064005,9444555194'
+// const adminmobnos = '9095204586'
 
 // login
 router.post('/login', function (req, res, next) {
@@ -126,7 +128,6 @@ router.post('/otp', (request, response) => {
 router.post('/checkotp', (req, res) => {
   driverActivity.checkOtp(req.body, (err, row, status) => {
     if (err) throw err
-    console.log(row)
     if (row.length) {
       let result = { 'message': 'OTP VERIFIED', 'status': status, 'drivertype': row[0].drivertype }
       res.send(result)
@@ -191,11 +192,9 @@ var storage = multer.diskStorage(
     destination: '',
     filename: function (req, file, cb) {
       if (file == undefined) {
-        console.log(req.body);
         cb(null, undefined);
       }
       else {
-        console.log(req.body);
         cb(null, Date.now() + '_' + file.originalname);
       }
     }
@@ -206,8 +205,6 @@ var upload = multer({ storage: storage });
 // Profile Image
 // var cpUpload = upload.fields([{ name: 'driver_image', maxCount: 1, path }, { name: 'driver_aadhar', maxCount: 1 }])
 router.post('/AddDriverImage', upload.any(), (req, res) => {
-  //console.log(req.files)
-  //console.log(req.body.)
   let did = req.body.driver_id;
   let header;
   if (req.headers['driver_id']) {
@@ -215,16 +212,13 @@ router.post('/AddDriverImage', upload.any(), (req, res) => {
   }
   let driver = [];
   let driverfield = [];
-  console.log(req.files)
   req.files.map((res, index) => {
     driver[index] = res.filename;
     driverfield[index] = res.fieldname;
   })
-  console.log(driver)
   // return driver
   driverActivity.CreatprofilImages(driver, did, (err, result) => {
     if (err) throw err;
-    console.log(result);
     if (result) {
       let result = { 'message': 'success' }
       res.send(result)
@@ -382,10 +376,6 @@ router.get('/NoAssignBooking', function (req, res, err) {
 //Drivers in Map
 router.get('/DriverMap', function (req, res, err) {
   //let user=req.body;
-  // console.log(req.protocol);
-  // console.log(req.originalUrl);
-  // console.log(req.url);
-  // console.log(req.path);
   let user = req.query;
   let cond = " and (isMadMoney='Req' or isShare='Req' or isHire='Req' or isRental='Req')";
   if (user.type == 'courier')
@@ -394,7 +384,6 @@ router.get('/DriverMap', function (req, res, err) {
     cond = " and (isShare='Req' or isHire='Req')"
   else if (user.type == 'rental')
     cond = " and (isRental='Req')"
-  console.log(user)
   let dqry = "SELECT id,Driverid,Mobileno,latitude,longitude, ( 3959 * acos( cos( radians(?) ) * cos( radians( Latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( Latitude ) ) ) ) AS distance FROM tbl_driverstatus where id<>0 " + cond + " HAVING distance < 10 ORDER BY distance LIMIT 0 , 10"
   dbconfig.query(dqry, [user.fromlat, user.fromlong, user.fromlat], (err, result) => {
     if (err) {
@@ -467,24 +456,35 @@ router.post('/BookingAction', function (req, res, err) {
 router.post('/DriverPickup', function (req, res, err) {
   let reqq = req.body;
   //let reqq=req.query;
-  let itemss1 = dbconfig.query("select count(*) as cnt,BookingId,Recmobile,recotp,Drivermobile from vw_assignbooking where id=? and OTP=?", [reqq.id, reqq.otp], (err, result2) => {
+  let itemss1 = dbconfig.query("select count(*) as cnt,BookingId,Recmobile,recotp,Drivermobile,token from vw_assignbooking where id=? and OTP=?", [reqq.id, reqq.otp], (err, result2) => {
     if (result2[0].cnt > 0) {
       dbconfig.query("update tbl_assignbooking set isPickup=1 where id=?", [reqq.id], (err, result1) => {
         dbconfig.query("update tbl_driverstatus set isMadmoney='ON' where Mobileno=? ", [result2[0].Drivermobile])
         if (reqq.refno === 'paid')
           common.QueryExecute("update tbl_courierbooking set BankRefNo='paid' where BookingId=?", [reqq.bookingid])
         if (result2[0].Recmobile != '') {
-          common.MessageTemplate("CRBKOTP1").then(res4 => {
-            let temp = res4;
-            temp = temp.replace('$bid$', result2[0].BookingId);
+          let link= common.MessageTemplate("DROPOTP").then(res2 => {
+            let url=new URL('https://donkeycargo.com/Booking/#/user/'+result2[0].token)
+            let temp = res2.replace('$bid$', result2[0].BookingId);
             temp = temp.replace('$otp$', result2[0].recotp);
-
-            common.SendSMS(result2[0].Recmobile, temp).then(res5 => {
-              if (res5 != 'success')
-                return callback(null, results)
+            temp = temp.replace('$link1$', url.href.substring(0,29));
+            temp = temp.replace('$link2$', url.href.substring(29,url.href.length+1));
+              return common.SendSMS(result2[0].RecMobile, temp).then(res3 => {
+              return 1;
             })
-
           })
+
+          // common.MessageTemplate("CRBKOTP1").then(res4 => {
+          //   let temp = res4;
+          //   temp = temp.replace('$bid$', result2[0].BookingId);
+          //   temp = temp.replace('$otp$', result2[0].recotp);
+
+          //   common.SendSMS(result2[0].Recmobile, temp).then(res5 => {
+          //     if (res5 != 'success')
+          //       return callback(null, results)
+          //   })
+
+          // })
         }
 
         if (err) {
@@ -504,10 +504,15 @@ router.post('/DriverDrop', function (req, res, err) {
   let reqq = req.body;
   let data = {};
   //let reqq=req.query;
-  common.QueryExecute("select count(*) as cnt,max(drivermobile) as drivermobile,ifNull((SELECT COUNT(*) from vw_assignbooking WHERE isdrop=0 and drivermobile=base.Drivermobile),0) as dCount from vw_assignbooking base where id=? and (recotp=? or recotp='')", [reqq.id, reqq.otp]).then(res1 => {
+  common.QueryExecute("select count(*) as cnt,max(drivermobile) as drivermobile,ifNull((SELECT COUNT(*) from vw_assignbooking WHERE isdrop=0 and drivermobile=base.Drivermobile),0) as dCount,BookingId,UserMobileno from vw_assignbooking base where id=? and (recotp=? or recotp='')", [reqq.id, reqq.otp]).then(res1 => {
     data = res1
     if (data[0].cnt > 0) {
       return common.QueryExecute("update tbl_assignbooking set isDrop=1,Remarks=? where id=?", [reqq.otp, reqq.id]).then(res2 => {
+        let link= common.MessageTemplate("DELIVERY").then(res2 => {
+          let temp = res2.replace('$bid$', data[0].BookingId);
+            common.SendSMS(data[0].UserMobileno, temp)
+        })
+
         if (data[0].dCount === 1) {
           return common.QueryExecute("update tbl_driverstatus set isMadmoney='OFF' where Mobileno=?", [data[0].drivermobile])
         }
@@ -517,7 +522,6 @@ router.post('/DriverDrop', function (req, res, err) {
   }).catch(err => {
     return err;
   })
-
 });
 
 //Pickup

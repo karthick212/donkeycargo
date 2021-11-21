@@ -58,14 +58,10 @@ router.post('/sendmail', (request, response) => {
         subject: res.Subject,        
         html: res.Text
       };
-
           transporter.sendMail(mailOptions, function(error, info){
             if (error) {
-    //console.log(error);
     response.json({"msg": error});
   } else {
-    //console.log('Email sent: ' + sd);
-    console.log(res.Text);
     response.json({"msg":info.response});
   }
 });

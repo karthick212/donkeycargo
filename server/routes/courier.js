@@ -189,68 +189,36 @@ router.post('/cancelBooking', (req, res) => {
   let user = req.body
   courierActivity.cancelBooking(user, (err, rows) => {
     if (err) throw err
-    if (rows.affectedRows > 0 && user.ctype) {
-      let mesHead = ''
-      if (user.ctype === 'ND') mesHead = 'CRBKCANTUND'
-      else mesHead = 'CRBKCANTUNS'
-      let ss = common.MessageTemplate(mesHead).then(res2 => {
-        let temp = res2.replace('$bid$', user.bid);
-        return common.SendSMS(user.mobno, temp).then(res3 => {
-          ResMsg.status = 'success'
-          ResMsg.data = rows
-          res.json(ResMsg)
+
+    if (rows.affectedRows > 0) {
+      if (user.ctype) {
+        let mesHead = ''
+        if (user.ctype === 'ND') mesHead = 'CRBKCANTUND'
+        else mesHead = 'CRBKCANTUNS'
+        let ss = common.MessageTemplate(mesHead).then(res2 => {
+          let temp = res2.replace('$bid$', user.bid);
+          common.SendSMS(user.mobno, temp)
         })
-      })
-    }
-    else if (rows.affectedRows > 0 && user.usertype && user.usertype === "admin") {
-      let ss = common.MessageTemplate("CRBKCANTU").then(res2 => {
-        let temp = res2.replace('$bid$', user.bid);
-        if (user.usertype && rows.rs !== "0")
+      } else {
+        let ss = common.MessageTemplate("CRBKCANTU").then(res2 => {
+          let temp = res2.replace('$bid$', user.bid);
           temp = temp.replace('$rs$', rows.rs);
-        else temp = temp.replace(' for Rs.$rs$', '');
-        return common.SendSMS(user.mobno, temp).then(res3 => {
-          ResMsg.status = 'success'
-          ResMsg.data = rows
-          res.json(ResMsg)
+          common.SendSMS(user.mobno, temp)
         })
-      })
+      }
+
+      if (rows.drivermob) {
+        let sd = common.MessageTemplate("CRBKCANTD").then(res2 => {
+          let temp = res2.replace('$bid$', user.bid);
+          common.SendSMS(rows.drivermob, temp)
+        })
+      }
+
+      ResMsg.status = 'success'
+      ResMsg.data = rows
+      res.json(ResMsg)
     }
-    else if (rows.affectedRows > 0 && rows.drivermob) {
-
-      let ss = common.MessageTemplate("CRBKCANTU").then(res2 => {
-        let temp = res2.replace('$bid$', user.bid);
-        if (user.usertype)
-          temp = temp.replace('$rs$', rows.rs);
-        else temp = temp.replace(' for Rs.$rs$', '');
-        return common.SendSMS(user.mobno, temp).then(res3 => {
-          return 1
-        })
-      })
-
-      let sd = common.MessageTemplate("CRBKCANTD").then(res2 => {
-        let temp = res2.replace('$bid$', user.bid);
-        return common.SendSMS(rows.drivermob, temp).then(res3 => {
-          ResMsg.status = 'success'
-          ResMsg.data = rows
-          res.json(ResMsg)
-        })
-      })
-
-    }
-    else if (rows.affectedRows > 0) {
-      let ss = common.MessageTemplate("CRBKCANTU").then(res2 => {
-        let temp = res2.replace('$bid$', user.bid);
-        if (user.usertype)
-          temp = temp.replace('$rs$', rows.rs);
-        else temp = temp.replace(' for Rs.$rs$', '');
-        return common.SendSMS(user.mobno, temp).then(res3 => {
-          ResMsg.status = 'success'
-          ResMsg.data = rows
-          res.json(ResMsg)
-        })
-      })
-
-    } else {
+    else {
       ResMsg.status = 'failed'
       res.json(ResMsg)
     }
@@ -264,7 +232,6 @@ router.post('/DriverAssign', (request, response) => {
   var mobno = res.mobno;
   var id = res.id;
   courierActivity.DriverAssign(res, (rows) => {
-    console.log(rows)
     if (rows == 'success') {
       ResMsg.status = 'success'
       ResMsg.data = rows
@@ -326,8 +293,8 @@ router.get("/checkstatus", async (request, response) => {
   const token = encryptToken(signIn({ body: first(bookinghistory) }).token)
 
   let result = await common.QueryExecute("select *  from tbl_assignbooking where drivertoken=?", [data.token]);
-  if(result.length)
-  sendResult({ token, ...first(result) }, response)
+  if (result.length)
+    sendResult({ token, ...first(result) }, response)
   else sendResult(null, response)
 });
 
@@ -337,8 +304,8 @@ router.get("/checkuser", async (request, response) => {
   let bookinghistory = await common.QueryExecute(getQuery, [data.token])
   const token = encryptToken(signIn({ body: first(bookinghistory) }).token)
 
-  if(bookinghistory.length)
-  sendResult({ token }, response)
+  if (bookinghistory.length)
+    sendResult({ token }, response)
   else sendResult(null, response)
 });
 
