@@ -5,7 +5,8 @@ h1 { margin:50px auto;}
   position: fixed;
   bottom: 45px;
   right: 24px;
-  height: 70px;
+  /* height: 70px; */
+  width: 60px;
   z-index: 10;
 }
 
