@@ -207,7 +207,7 @@ router.post('/cancelBooking', (req, res) => {
         })
       }
 
-      if (rows.drivermob) {
+      if (!user.ctype&&rows.drivermob) {
         let sd = common.MessageTemplate("CRBKCANTD").then(res2 => {
           let temp = res2.replace('$bid$', user.bid);
           common.SendSMS(rows.drivermob, temp)

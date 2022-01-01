@@ -323,12 +323,14 @@ var UserController = {
               dbconfig.query("update tbl_driverstatus set isMadmoney='OFF' where Mobileno=?", [data[0].drivermobile])
             }
 
-            const link = common.MessageTemplate("ADMINALERTUSERCANCEL").then(res2 => {
-              let temp = res2.replace('$bid$', user.bid);
-              return common.SendSMS(adminmobnos, temp).then(res3 => {
-                // return 1;
+            if(user.usertype!=='admin') {
+              const link = common.MessageTemplate("ADMINALERTUSERCANCEL").then(res2 => {
+                let temp = res2.replace('$bid$', user.bid);
+                return common.SendSMS(adminmobnos, temp).then(res3 => {
+                  // return 1;
+                })
               })
-            })
+            }
 
             if (results2.length)
               results.rs = results2[0].NetTotal
