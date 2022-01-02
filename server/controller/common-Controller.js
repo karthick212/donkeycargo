@@ -25,18 +25,11 @@ var CommonController = {
       return null;
     })
   },
-  async sendResult (result, response) {
-    try {
-      if (result) {
-        const resp = await sendResponse(result, 200)
-        response.status(resp.status).json(resp)
-      } else {
-        response.status(400).json({ status: 400, data: null })
-      }
-    }
-    catch (ex) {
-      console.log(ex)
-      response.status(400).json(ex)
+  sendResult (res, data, statusCode = 200) {
+    if (statusCode === 204) {
+      res.status(statusCode).json('no results found!')
+    } else {
+      res.status(statusCode).json(data)
     }
   },
   QueryExecute (qry, args) {
