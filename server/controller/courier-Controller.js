@@ -222,6 +222,7 @@ var UserController = {
 
     let insertQuery = 'INSERT INTO `tbl_courierbooking` (`BookingId`, `BookingSerial`, `BookingDate`, `BookingTime`, `FromLatitude`,`FromLongitude`, `ToLatitude`, `ToLongitude`, `FromAddress`, `ToAddress`, `CourierType`, `CourierName`, `ProductType`, `LocalAdd1`, `LocalAdd2`, `LocalAdd3`,          `DL1`,      `DB1`,    `DAmt1`,   `DL2`,   `DB2`,  `DAmt2`,    `BL1`,   `BB1`,  `BH1`,   `BW1`,  `BAmt1`,   `BL2`,   `BB2`,  `BH2`,    `BW2`, `BAmt2`,     `Total`, `PaymentMode`, `CouponCode`, `CouponAmt`,     `NetTotal`,   `isCancel`, `isActive`, `MobileNo`, `OTP`, `BankRefNo`, `UserID`, `RecName`, `RecMobile`, `Remarks`, `LocalDistance`, `SAmt`, `RecOTP`, `NOI`, `clatitude`, `clongitude`, `PersonalMobno`, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
     return dbconfig.query(insertQuery, [user.bid, user.bserial, todate, time, user.fromlat, user.fromlong, user.tolat, user.tolong, user.fromadd, user.toadd, user.ctype, user.cname, user.product, user.localadd1, user.localadd2, user.localadd3, user.dl1, user.db1, user.damt1, user.dl2, user.db2, user.damt2, user.bl1, user.bb1, user.bh1, user.bw1, user.bamt1, user.bl2, user.bb2, user.bh2, user.bw2, user.bamt2, user.total, user.paymode, user.couponcode, user.couponamt, user.nettotal, user.iscancel, '1', user.mobno, RandomOtp, user.bankrefno, user.userid, user.recname, user.recmobile, user.remarks, user.localdistance, user.samt, RandomOtp2, user.noi, user.clat, user.clong, user.personal, token], (err, results) => {
+      if(err) throw err;
       if (results.affectedRows > 0) {
         // let link= common.MessageTemplate("DROPOTP").then(res2 => {
         //   let url=new URL('https://donkeycargo.com/Booking/#/user/'+token)
@@ -323,7 +324,7 @@ var UserController = {
               dbconfig.query("update tbl_driverstatus set isMadmoney='OFF' where Mobileno=?", [data[0].drivermobile])
             }
 
-if(user.usertype!=='admin') {
+            if(user.usertype!=='admin') {
               const link = common.MessageTemplate("ADMINALERTUSERCANCEL").then(res2 => {
                 let temp = res2.replace('$bid$', user.bid);
                 return common.SendSMS(adminmobnos, temp).then(res3 => {

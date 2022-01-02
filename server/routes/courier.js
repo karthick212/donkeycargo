@@ -294,8 +294,8 @@ router.get("/checkstatus", async (request, response) => {
 
   let result = await common.QueryExecute("select *  from tbl_assignbooking where drivertoken=?", [data.token]);
   if (result.length)
-    sendResult({ token, ...first(result) }, response)
-  else sendResult(null, response)
+    sendResult(response, { token, ...first(result) })
+  else sendResult(response, null)
 });
 
 router.get("/checkuser", async (request, response) => {
@@ -305,8 +305,8 @@ router.get("/checkuser", async (request, response) => {
   const token = encryptToken(signIn({ body: first(bookinghistory) }).token)
 
   if (bookinghistory.length)
-    sendResult({ token }, response)
-  else sendResult(null, response)
+    sendResult(response, { token })
+  else sendResult(response, null)
 });
 
 // function intervalFunc() {

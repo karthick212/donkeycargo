@@ -40,11 +40,11 @@ var CommonController = {
       })
     })
   },
-  encryptToken(token) {
-    const splittoken=token.split('.')
-    const encypted = splittoken.map(m=> {
+  encryptToken (token) {
+    const splittoken = token.split('.')
+    const encypted = splittoken.map(m => {
       const str = m.split('')
-      str.splice(12,0,'D')
+      str.splice(12, 0, 'D')
       return str.join('');
     }).join('.')
     return encypted;
@@ -53,7 +53,7 @@ var CommonController = {
     var Otpurl = 'https://sms.nettyfish.com/api/v2/SendSMS?SenderId=DCARGO&Is_Unicode=false&Is_Flash=false&Message=' + msg + '&MobileNumbers=' + mobno + '&ApiKey=84c52596-d40a-4ecd-aab9-5b275c01f828&ClientId=10c06444-221b-463e-a9c1-bcbe4d418b88'
 
     return new Promise((res, rej) => {
-      const data={
+      const data = {
         "SenderId": "DCARGO",
         "Is_Unicode": false,
         "Is_Flash": false,
@@ -62,7 +62,7 @@ var CommonController = {
         "ApiKey": "84c52596-d40a-4ecd-aab9-5b275c01f828",
         "ClientId": "10c06444-221b-463e-a9c1-bcbe4d418b88"
       }
-     const formdata= {
+      const formdata = {
         url: 'https://sms.nettyfish.com/api/v2/SendSMS',
         body: data,
         json: true

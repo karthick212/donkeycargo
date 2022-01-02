@@ -138,7 +138,7 @@ router.get('/booking_history', async (req, res, err) => {
     return
   }
   try {
-    const qry = `select * from vw_assignbooking where userMobileno='${data.mobno}' and isDrop=1`
+    const qry = `select * from vw_assignbooking where userMobileno='${data.mobno}' and isDrop=1 order by isFavourite desc,BookDate desc`
     const result = await QueryExecute(qry)
     if (result.length) {
     sendResult(res, result)
