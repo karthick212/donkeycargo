@@ -509,7 +509,6 @@ router.post('/DriverDrop', function (req, res, err) {
     if (data[0].cnt > 0) {
       return common.QueryExecute("update tbl_assignbooking set isDrop=1,Remarks=? where id=?", [reqq.otp, reqq.id]).then(res2 => {
         let link= common.MessageTemplate("DELIVERY").then(res2 => {
-          console.log(res2, data)
           let temp = res2.replace('$bid$', data[0].BookingId);
             common.SendSMS(data[0].UserMobileno, temp)
         })

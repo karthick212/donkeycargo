@@ -138,7 +138,7 @@ router.get('/booking_history', async (req, res, err) => {
     return
   }
   try {
-    const qry = `select * from vw_assignbooking where userMobileno='${data.mobno}' and isDrop=1`
+    const qry = `select * from vw_assignbooking where userMobileno='${data.mobno}' and isDrop=1 order by isFavourite desc,BookDate desc`
     const result = await QueryExecute(qry)
     if (result.length) {
     sendResult(res, result)
@@ -159,7 +159,7 @@ router.post('/booking_history', async (req, res, err) => {
   try {
     const qry = `update tbl_courierbooking set isFavourite=? where BookingId=?`
     const result = await QueryExecute(qry,[data.isFavourite,data.bid])
-    if (result?.affectedRows) {
+    if (result.affectedRows) {
     sendResult(res, "updated")
     } else {
     sendResult(res, "", 204)
