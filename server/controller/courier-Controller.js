@@ -227,16 +227,16 @@ var UserController = {
         const [couponData]=await common.QueryExecute("select * from tbl_couponmaster where CouponCode=?",[user.couponcode])
         if(couponData) {
           const couponQry = " INSERT INTO `tbl_coupondetails` (`Date`, `UserId`, `Mobileno`, `Couponid`, `Debit`, `Credit`, `isActive`, `couponcode`) VALUES (?,?,?,?,?,?,?,?)"
-          const params=[todate, user.userid, user.mobno, couponData?.id, couponData?.CouponAmt,0,1, user.couponcode]
+          const params=[todate, user.userid, user.mobno, couponData.id, couponData.CouponAmt,0,1, user.couponcode]
           const couponCreate = await common.QueryExecute(couponQry, params)  
         }
         
-        // let sms = common.MessageTemplate("ADMINALERT").then(res2 => {
-        //   let temp = res2.replace('$bid$', user.bid);
-        //   return common.SendSMS(adminmobnos, temp).then(res3 => {
-        //     return 1;
-        //   })
-        // })
+        let sms = common.MessageTemplate("ADMINALERT").then(res2 => {
+          let temp = res2.replace('$bid$', user.bid);
+          return common.SendSMS(adminmobnos, temp).then(res3 => {
+            return 1;
+          })
+        })
 
         return callback(null, "success")
       }
