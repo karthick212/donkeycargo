@@ -68,18 +68,17 @@ router.get("/Calc", function (request, response) {
 
       let disc = 0;
       let offerHeader = '';
-      if (res.CouponAmt > 0) {
+     if (res.CouponAmt > 0) {
         res.SplDisc = 0;
-        disc = res.CouponAmt;
+        disc = Math.round(gross * res.CouponAmt / 100)
         offerHeader = 'Flat Rs.' + disc + ' Offer'
-      }
-      else if (res.SplDisc > 0) {
+      } else if (res.SplDisc > 0) {
         disc = Math.round(Total1 * res.SplDisc / 100, 0);
         offerHeader = 'Flat ' + res.SplDisc + '% Offer'
       }
 
       let Total = Total1 - disc;
-      ress[0] = { 'damt1': res.DAmt1, 'damt2': res.DAmt2, 'bamt1': res.BAmt1, 'bamt2': res.BAmt2, 'samt': res.SAmt, 'Total': Total, 'gross': gross, 'bwgt1': res.BWgt1, 'bwgt2': res.BWgt2, 'localdist': res.localdist, 'splDisc': res.SplDisc, 'CouponAmt': res.CouponAmt, 'docHeader': doc, 'boxHeader': box, 'docamt': docamt, 'boxamt': boxamt, 'disc': disc, 'offerHeader': offerHeader, 'clatitude': res.tolat, 'clongitude': res.tolong }
+      ress[0] = { 'damt1': res.DAmt1, 'damt2': res.DAmt2, 'bamt1': res.BAmt1, 'bamt2': res.BAmt2, 'samt': res.SAmt, 'Total': Total, 'gross': gross, 'bwgt1': res.BWgt1, 'bwgt2': res.BWgt2, 'localdist': res.localdist, 'splDisc': res.SplDisc, 'CouponAmt': disc, 'docHeader': doc, 'boxHeader': box, 'docamt': docamt, 'boxamt': boxamt, 'disc': disc, 'offerHeader': offerHeader, 'clatitude': res.tolat, 'clongitude': res.tolong }
       ResMsg.data = ress;
       response.json(ResMsg);
     }
@@ -166,6 +165,26 @@ router.get('/getCoupon', (request, response) => {
   })
 })
 
+router.get('/getUserCoupons', (request, response) => {
+  let ResMsg = {}
+  let res = request.query
+  var mobno = res.mobno;
+  var id = res.id;
+  courierActivity.getUserCoupon(res, (err, rows) => {
+    if (err) throw err
+    if (rows.length > 0) {
+      ResMsg.status = 'success'
+      ResMsg.message = 'list of orders'
+      ResMsg.data = rows
+    } else {
+      ResMsg.message = 'There are no records found'
+      ResMsg.status = 'failed'
+    }
+    response.json(ResMsg)
+    //response.send(JSON.stringify(ResMsg))
+  })
+})
+
 router.post('/updatePaymode', (request, response) => {
   let ResMsg = {}
   let res = request.body
@@ -207,7 +226,7 @@ router.post('/cancelBooking', (req, res) => {
         })
       }
 
-      if (!user.ctype&&rows.drivermob) {
+      if (!user.ctype && rows.drivermob) {
         let sd = common.MessageTemplate("CRBKCANTD").then(res2 => {
           let temp = res2.replace('$bid$', user.bid);
           common.SendSMS(rows.drivermob, temp)

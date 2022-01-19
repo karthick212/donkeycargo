@@ -221,27 +221,22 @@ var UserController = {
     // const token = this.encryptToken(signIn(body).token)
 
     let insertQuery = 'INSERT INTO `tbl_courierbooking` (`BookingId`, `BookingSerial`, `BookingDate`, `BookingTime`, `FromLatitude`,`FromLongitude`, `ToLatitude`, `ToLongitude`, `FromAddress`, `ToAddress`, `CourierType`, `CourierName`, `ProductType`, `LocalAdd1`, `LocalAdd2`, `LocalAdd3`,          `DL1`,      `DB1`,    `DAmt1`,   `DL2`,   `DB2`,  `DAmt2`,    `BL1`,   `BB1`,  `BH1`,   `BW1`,  `BAmt1`,   `BL2`,   `BB2`,  `BH2`,    `BW2`, `BAmt2`,     `Total`, `PaymentMode`, `CouponCode`, `CouponAmt`,     `NetTotal`,   `isCancel`, `isActive`, `MobileNo`, `OTP`, `BankRefNo`, `UserID`, `RecName`, `RecMobile`, `Remarks`, `LocalDistance`, `SAmt`, `RecOTP`, `NOI`, `clatitude`, `clongitude`, `PersonalMobno`, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-    return dbconfig.query(insertQuery, [user.bid, user.bserial, todate, time, user.fromlat, user.fromlong, user.tolat, user.tolong, user.fromadd, user.toadd, user.ctype, user.cname, user.product, user.localadd1, user.localadd2, user.localadd3, user.dl1, user.db1, user.damt1, user.dl2, user.db2, user.damt2, user.bl1, user.bb1, user.bh1, user.bw1, user.bamt1, user.bl2, user.bb2, user.bh2, user.bw2, user.bamt2, user.total, user.paymode, user.couponcode, user.couponamt, user.nettotal, user.iscancel, '1', user.mobno, RandomOtp, user.bankrefno, user.userid, user.recname, user.recmobile, user.remarks, user.localdistance, user.samt, RandomOtp2, user.noi, user.clat, user.clong, user.personal, token], (err, results) => {
+    return dbconfig.query(insertQuery, [user.bid, user.bserial, todate, time, user.fromlat, user.fromlong, user.tolat, user.tolong, user.fromadd, user.toadd, user.ctype, user.cname, user.product, user.localadd1, user.localadd2, user.localadd3, user.dl1, user.db1, user.damt1, user.dl2, user.db2, user.damt2, user.bl1, user.bb1, user.bh1, user.bw1, user.bamt1, user.bl2, user.bb2, user.bh2, user.bw2, user.bamt2, user.total, user.paymode, user.couponcode, user.couponamt, user.nettotal, user.iscancel, '1', user.mobno, RandomOtp, user.bankrefno, user.userid, user.recname, user.recmobile, user.remarks, user.localdistance, user.samt, RandomOtp2, user.noi, user.clat, user.clong, user.personal, token], async (err, results) => {
       if(err) throw err;
       if (results.affectedRows > 0) {
-        // let link= common.MessageTemplate("DROPOTP").then(res2 => {
-        //   let url=new URL('https://donkeycargo.com/Booking/#/user/'+token)
+        const [couponData]=await common.QueryExecute("select * from tbl_couponmaster where CouponCode=?",[user.couponcode])
+        if(couponData) {
+          const couponQry = " INSERT INTO `tbl_coupondetails` (`Date`, `UserId`, `Mobileno`, `Couponid`, `Debit`, `Credit`, `isActive`, `couponcode`) VALUES (?,?,?,?,?,?,?,?)"
+          const params=[todate, user.userid, user.mobno, couponData?.id, couponData?.CouponAmt,0,1, user.couponcode]
+          const couponCreate = await common.QueryExecute(couponQry, params)  
+        }
+        
+        // let sms = common.MessageTemplate("ADMINALERT").then(res2 => {
         //   let temp = res2.replace('$bid$', user.bid);
-        //   temp = temp.replace('$otp$', RandomOtp2);
-        //   temp = temp.replace('$link1$', url.href.substring(0,29));
-        //   temp = temp.replace('$link2$', url.href.substring(29,url.href.length+1));
-
-        //     return common.SendSMS(user.recmobile, temp).then(res3 => {
+        //   return common.SendSMS(adminmobnos, temp).then(res3 => {
         //     return 1;
         //   })
         // })
-
-        let sms = common.MessageTemplate("ADMINALERT").then(res2 => {
-          let temp = res2.replace('$bid$', user.bid);
-          return common.SendSMS(adminmobnos, temp).then(res3 => {
-            return 1;
-          })
-        })
 
         return callback(null, "success")
       }
@@ -283,6 +278,23 @@ var UserController = {
 
     let insertQuery = "select * from vw_couponbalance where Credit='0' " + cond
     return dbconfig.query(insertQuery, param, (err, results) => {
+      if (err) {
+        return callback(null, err)
+      }
+      else
+        return callback(null, results)
+    })
+  },
+  getUserCoupon (user, callback) {
+    let cond = ""
+    var param = []
+    if (user.mobno != undefined) {
+      cond = " and Mobileno=?";
+      param = [user.mobno, user.mobno]
+    }
+
+    let getQuery = "select * from tbl_couponmaster where id not in (select id from vw_usercoupons where isActive<>'0' " + cond+") and (CouponType<>'Individual' or user_mobile=?) and DATE_ADD(start_date, INTERVAL Validity DAY)>=CURDATE()"
+    return dbconfig.query(getQuery, param, (err, results) => {
       if (err) {
         return callback(null, err)
       }

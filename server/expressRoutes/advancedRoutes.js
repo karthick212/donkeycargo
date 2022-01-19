@@ -815,15 +815,15 @@ var upload2 = multer({ storage: storage2 })
 //]);
 
 itemRoutes.post('/Coupon/add',upload2.any(),function(req,res,err){
-  console.log(req.files[0]);
+  var qry="INSERT INTO tbl_couponmaster(`id`,`ServiceCity`,`ServiceType`,`CouponType`,`CouponCode`,`CouponAmt`,`Description`,`fileName`,`filePath`,`fileFormat`,`Validity`,`MonthlyLimit`,`isActive`,`start_date`,`entry_date`,`user_mobile`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
+  var currentDate = new Date();
 
-  var qry="INSERT INTO tbl_couponmaster VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);"
   if(req.files[0]==undefined)
   {
-    dbconfig.query(qry, [req.body.id, req.body.selectedcity, req.body.selectedType, req.body.couponType, req.body.offercode, req.body.offerrate, req.body.note, '', '/upload/coupon/', '', req.body.offervalidity, req.body.monthly,1]);
+    dbconfig.query(qry, [req.body.id, req.body.selectedcity, req.body.selectedType, req.body.couponType, req.body.offercode, req.body.offerrate, req.body.note, '', '/upload/coupon/', '', req.body.offervalidity, req.body.monthly,1, req.body.start_date, currentDate, req.body.user_mobile]);
   }
   else
-    dbconfig.query(qry, [req.body.id, req.body.selectedcity, req.body.selectedType, req.body.couponType, req.body.offercode, req.body.offerrate, req.body.note, req.files[0].originalname, '/upload/coupon/'+req.files[0].filename, req.files[0].mimetype, req.body.offervalidity, req.body.monthly,1]);
+    dbconfig.query(qry, [req.body.id, req.body.selectedcity, req.body.selectedType, req.body.couponType, req.body.offercode, req.body.offerrate, req.body.note, req.files[0].originalname, '/upload/coupon/'+req.files[0].filename, req.files[0].mimetype, req.body.offervalidity, req.body.monthly,1,req.body.start_date, currentDate, req.body.user_mobile]);
   //adminActivity.RegisterAdmin(req.body, (err, count) => {
     if (err) {
      res.json(err);
@@ -837,14 +837,14 @@ itemRoutes.post('/Coupon/add',upload2.any(),function(req,res,err){
 
 itemRoutes.post('/Coupon/update',upload2.any(),function(req,res,err){
   //console.log(req.files[0]);
-  var qry="update tbl_couponmaster set ServiceCity=?,ServiceType=?,CouponType=?,CouponCode=?,CouponAmt=?,Description=?,Validity=?,MonthlyLimit=? where id=?";
+  var qry="update tbl_couponmaster set ServiceCity=?,ServiceType=?,CouponType=?,CouponCode=?,CouponAmt=?,Description=?,Validity=?,MonthlyLimit=?,start_date=?,user_mobile=? where id=?";
   if(req.files[0]!=undefined)
   { 
-    qry="update tbl_couponmaster set ServiceCity=?,ServiceType=?,CouponType=?,CouponCode=?,CouponAmt=?,Description=?,Validity=?,MonthlyLimit=?,fileName=?,filePath=?,fileFormat=? where id=?";
-    dbconfig.query(qry, [req.body.selectedcity, req.body.selectedType, req.body.couponType, req.body.offercode, req.body.offerrate, req.body.note, req.body.offervalidity, req.body.monthly,req.files[0].originalname, '/upload/coupon/'+req.files[0].filename, req.files[0].mimetype, req.body.id]);
+    qry="update tbl_couponmaster set ServiceCity=?,ServiceType=?,CouponType=?,CouponCode=?,CouponAmt=?,Description=?,Validity=?,MonthlyLimit=?,fileName=?,filePath=?,fileFormat=?,start_date=?,user_mobile=? where id=?";
+    dbconfig.query(qry, [req.body.selectedcity, req.body.selectedType, req.body.couponType, req.body.offercode, req.body.offerrate, req.body.note, req.body.offervalidity, req.body.monthly,req.files[0].originalname, '/upload/coupon/'+req.files[0].filename, req.files[0].mimetype, req.body.start_date, req.body.user_mobile, req.body.id]);
   }
   else
-    dbconfig.query(qry, [req.body.selectedcity, req.body.selectedType, req.body.couponType, req.body.offercode, req.body.offerrate, req.body.note, req.body.offervalidity, req.body.monthly, req.body.id]);
+    dbconfig.query(qry, [req.body.selectedcity, req.body.selectedType, req.body.couponType, req.body.offercode, req.body.offerrate, req.body.note, req.body.offervalidity, req.body.monthly, req.body.start_date,req.body.user_mobile, req.body.id]);
   //adminActivity.RegisterAdmin(req.body, (err, count) => {
    if (err) {
      res.json(err);

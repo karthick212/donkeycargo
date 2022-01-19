@@ -20,7 +20,7 @@
     "multer": "^1.4.3",
     "mysql": "^2.18.1",
     "node-geocoder": "^3.27.0",
-    "nodemailer": "^6.7.1",
+    "nodemailer": "^6.7.0",
     "path": "^0.12.7",
     "progress-stream": "^2.0.0",
     "request": "^2.88.2",

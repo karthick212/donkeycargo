@@ -599,7 +599,7 @@ router.post('/DriverReport', function (req, res, err) {
     cond = " and BookingDate between '" + reqq.fromdate + "' and '" + reqq.todate + "'"
     arr = [reqq.fromdate, reqq.todate]
   }
-  dbconfig.query("select DriverId,Drivermobile,UserId,bookingType,BookingId,BookingDate,BookingTime,UserMobileno,NetTotal,NetTotal as driverEarnings,Name,driver_name,BDate,BTime,paymentMode from vw_assignbooking where isDrop=1" + cond, arr, (err, result2) => {
+  dbconfig.query("select DriverId,Drivermobile,UserId,bookingType,BookingId,BookingDate,BookingTime,UserMobileno,NetTotal,NetTotal as driverEarnings,Name,driver_name,BDate,BTime,paymentMode,Email,RecMobile from vw_assignbooking where isDrop=1" + cond, arr, (err, result2) => {
     if (err) {
       res.json(err);
     } else {

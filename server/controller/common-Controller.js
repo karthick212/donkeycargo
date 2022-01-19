@@ -25,13 +25,20 @@ var CommonController = {
       return null;
     })
   },
-  sendResult (res, data, statusCode = 200) {
-    if (statusCode === 204) {
-      res.status(statusCode).json('no results found!')
-    } else {
-      res.status(statusCode).json(data)
-    }
-  },
+  // async sendResult (result, response) {
+  //   try {
+  //     if (result) {
+  //       const resp = await sendResponse(result, 200)
+  //       response.status(resp.status).json(resp)
+  //     } else {
+  //       response.status(400).json(null)
+  //     }
+  //   }
+  //   catch (ex) {
+  //     console.log(ex)
+  //     response.status(400).json(ex)
+  //   }
+  // },
   QueryExecute (qry, args) {
     return new Promise((res, rej) => {
       dbconfig.query(qry, args, (err, rows) => {
@@ -39,6 +46,13 @@ var CommonController = {
         else res(rows);
       })
     })
+  },
+  sendResult (res, data, statusCode = 200) {
+    if (statusCode === 204) {
+      res.status(statusCode).json('no results found!')
+    } else {
+      res.status(statusCode).json(data)
+    }
   },
   encryptToken (token) {
     const splittoken = token.split('.')
